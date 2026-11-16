@@ -1,8 +1,4 @@
-/* ============================================================
-   FROSTFALL — slide engine + snowfall
-   Reads window.SLIDES_DATA from slides.js (no fetch needed).
-   Works from file://, GitHub Pages, or any static host.
-   ============================================================ */
+
 (() => {
   'use strict';
 
