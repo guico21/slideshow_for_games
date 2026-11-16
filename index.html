@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FROSTFALL — Holiday Field Manual</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- falling snow -->
+  <canvas id="snow" class="snow" aria-hidden="true"></canvas>
+
+  <!-- aurora / warm glow -->
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- string of lights along the top -->
+  <div class="lights" aria-hidden="true"></div>
+
+  <!-- HUD -->
+  <header class="hud">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span id="brandText">FROSTFALL</span>
+    </div>
+    <div class="hud-counter" id="slideCounter">01 / 01</div>
+  </header>
+
+  <!-- progress -->
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+  <!-- slides injected here -->
+  <main id="stage" class="stage" aria-live="polite"></main>
+
+  <!-- controls -->
+  <nav class="controls" aria-label="Slide navigation">
+    <button id="prevBtn" class="btn" type="button" aria-label="Previous slide">&#9664;</button>
+    <div class="dots" id="dots"></div>
+    <button id="nextBtn" class="btn" type="button" aria-label="Next slide">&#9654;</button>
+  </nav>
+
+  <!-- 1) config first — defines window.SLIDES_DATA -->
+  <script src="slides.js"></script>
+  <!-- 2) then the engine -->
+  <script src="app.js"></script>
+</body>
+</html>
