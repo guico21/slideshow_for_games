@@ -2,14 +2,10 @@
   'use strict';
 
   /* ---------- DOM ---------- */
-  const stage   = document.getElementById('stage');
-  const dotsEl  = document.getElementById('dots');
-  const counter = document.getElementById('slideCounter');
-  const bar     = document.getElementById('progressBar');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
+  const page   = document.getElementById('page');
+  const ctaBar = document.getElementById('ctaBar');
+  const bar    = document.getElementById('progressBar');
 
-  const state = { els: [], ids: [], index: -1 };
   const countdowns = [];
   const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -33,7 +29,8 @@
     let i = 0;
     return node => {
       node.classList.add('reveal');
-      node.style.setProperty('--i', i++);
+      node.style.setProperty('--i', Math.min(i, 4));
+      i++;
       return node;
     };
   }
@@ -54,7 +51,7 @@
     }).format(new Date(iso));
   }
 
-  // Google Maps directions from the user's current location -> shows distance & ETA.
+  // Google Maps directions from the user's current location -> distance & ETA.
   // Opens the native app on iOS/Android when installed, web otherwise.
   function mapsUrl() {
     return 'https://www.google.com/maps/dir/?api=1&destination=' +
@@ -62,7 +59,6 @@
   }
 
   const SVG_EXTERNAL = '<svg class="tile-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>';
-  const SVG_ARROW    = '<svg class="tile-go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
   const SVG_CHEVRON  = '<svg class="faq-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 
   /* ---------- countdowns ---------- */
@@ -136,10 +132,11 @@
     document.hidden ? stopClock() : startClock();
   });
 
-  /* ---------- slide builders ---------- */
+  /* ---------- section builders ---------- */
 
-  function buildHome(d, inner, rv) {
-    inner.classList.add('slide-inner--home');
+  function buildHero() {
+    const rv = revealer();
+    const hero = el('header', 'hero');
 
     // Title + starburst sticker
     const row = el('div', 'title-row');
@@ -153,22 +150,17 @@
     st.appendChild(el('span', 'sticker-bottom', parts.slice(1).join(' ')));
     wrap.appendChild(st);
     row.appendChild(wrap);
-    inner.appendChild(rv(row));
+    hero.appendChild(rv(row));
 
-    inner.appendChild(rv(el('p', 'subtitle',
-      `${EVENT.location.name} · ${londonDate(EVENT.nightAt)} · ${londonTime(EVENT.nightAt)}`)));
+    if (EVENT.tagline) hero.appendChild(rv(el('p', 'lead', EVENT.tagline)));
 
-    if (d.tagline) inner.appendChild(rv(el('p', 'lead', d.tagline)));
-
-    // Live countdowns
+    // Live countdowns (the only place dates & times are shown)
     const grid = el('div', 'count-grid');
     grid.appendChild(rv(countdownCard({ kind: 'confirm', label: 'Confirm by', iso: EVENT.confirmBy })));
     grid.appendChild(rv(countdownCard({ kind: 'night',   label: 'Game night', iso: EVENT.nightAt })));
-    inner.appendChild(grid);
+    hero.appendChild(grid);
 
-    // Location + pot tiles
-    const tiles = el('div', 'tile-row');
-
+    // Location (the only place the venue is shown)
     const loc = el('a', 'tile');
     loc.href = mapsUrl();
     loc.target = '_blank';
@@ -179,38 +171,31 @@
       `<span class="tile-body"><span class="tile-title">${EVENT.location.name}</span>` +
       `<span class="tile-sub">${EVENT.location.detail || 'Tap for distance & directions'}</span></span>` +
       SVG_EXTERNAL;
-    tiles.appendChild(rv(loc));
+    hero.appendChild(rv(loc));
 
-    const potBtn = el('button', 'tile');
-    potBtn.type = 'button';
-    potBtn.dataset.goto = 'pot';
-    potBtn.setAttribute('aria-label', 'See the prize pot details');
-    potBtn.innerHTML =
-      '<span class="tile-icon" aria-hidden="true">💰</span>' +
-      `<span class="tile-body"><span class="tile-title">${fmtMoney(potValue())} in the pot</span>` +
-      `<span class="tile-sub">${EVENT.money.players} players · ${fmtMoney(EVENT.money.fee)} each</span></span>` +
-      SVG_ARROW;
-    tiles.appendChild(rv(potBtn));
+    // Quick jumps
+    const jumps = el('nav', 'jump-row');
+    jumps.setAttribute('aria-label', 'Jump to a section');
+    [['#plan', 'The plan'], ['#pot', 'The pot'], ['#faq', 'FAQs']].forEach(([href, label]) => {
+      const a = el('a', 'jump-chip', `${label} <span aria-hidden="true">↓</span>`);
+      a.href = href;
+      jumps.appendChild(a);
+    });
+    hero.appendChild(rv(jumps));
 
-    inner.appendChild(tiles);
-
-    if (EVENT.confirmUrl) {
-      const cta = el('a', 'btn btn--primary btn--cta');
-      cta.href = EVENT.confirmUrl;
-      cta.target = '_blank';
-      cta.rel = 'noopener noreferrer';
-      cta.textContent = `${EVENT.confirmLabel} · ${fmtMoney(EVENT.money.fee)}`;
-      inner.appendChild(rv(cta));
-    }
-
-    inner.appendChild(rv(el('p', 'hint', d.hint || 'Swipe to continue')));
+    return hero;
   }
 
-  function buildHow(d, inner, rv) {
-    inner.classList.add('slide-inner--how');
-    if (d.eyebrow) inner.appendChild(rv(el('p', 'eyebrow', d.eyebrow)));
-    if (d.title)   inner.appendChild(rv(el('h2', 'title title--sm', d.title)));
-    if (d.text)    inner.appendChild(rv(el('p', 'lead', d.text)));
+  function buildPlan(d) {
+    const rv = revealer();
+    const sec = el('section', 'section');
+    sec.id = 'plan';
+
+    const head = el('div', 'section-head');
+    if (d.eyebrow) head.appendChild(el('p', 'eyebrow', d.eyebrow));
+    head.appendChild(el('h2', 'title title--sm', d.title || 'How it works'));
+    if (d.text) head.appendChild(el('p', 'lead', d.text));
+    sec.appendChild(rv(head));
 
     const ol = el('ol', 'steps');
     (d.steps || []).forEach((s, i) => {
@@ -222,7 +207,7 @@
       li.appendChild(body);
       ol.appendChild(rv(li));
     });
-    inner.appendChild(ol);
+    sec.appendChild(ol);
 
     if (Array.isArray(d.schedule) && d.schedule.length) {
       const sc = el('div', 'schedule');
@@ -233,47 +218,46 @@
         chip.appendChild(el('span', null, x.label));
         sc.appendChild(chip);
       });
-      inner.appendChild(rv(sc));
+      sec.appendChild(rv(sc));
     }
+
+    return sec;
   }
 
-  function buildPot(d, inner, rv) {
-    inner.classList.add('slide-inner--center', 'slide-inner--pot');
-    if (d.eyebrow) inner.appendChild(rv(el('p', 'eyebrow', d.eyebrow)));
-    if (d.title)   inner.appendChild(rv(el('h2', 'title title--sm', d.title)));
-    if (d.text)    inner.appendChild(rv(el('p', 'lead', d.text)));
+  function buildPot(d) {
+    const rv = revealer();
+    const sec = el('section', 'section');
+    sec.id = 'pot';
+
+    const head = el('div', 'section-head');
+    if (d.eyebrow) head.appendChild(el('p', 'eyebrow', d.eyebrow));
+    head.appendChild(el('h2', 'title title--sm', d.title || 'The Pot'));
+    if (d.text) head.appendChild(el('p', 'lead', d.text));
+    sec.appendChild(rv(head));
 
     const pot = potValue();
     const pct = clamp((pot / EVENT.money.goal) * 100, 0, 100);
+    const seatsLeft = Math.max(0, seatsTotal() - EVENT.money.players);
 
-    const hero = el('div', 'pot-hero');
+    const panel = el('div', 'pot-panel');
+
     const amount = el('div', 'pot-amount', fmtMoney(0));
     amount.dataset.target = pot;
-    hero.appendChild(amount);
-    hero.appendChild(el('div', 'pot-goal', `of ${fmtMoney(EVENT.money.goal)} when the house is full`));
-    inner.appendChild(rv(hero));
+    panel.appendChild(amount);
+
+    panel.appendChild(el('p', 'pot-sub',
+      `<strong>${EVENT.money.players}</strong> players × <strong>${fmtMoney(EVENT.money.fee)}</strong> buy-in`));
 
     const track = el('div', 'pot-bar');
     track.setAttribute('role', 'img');
-    track.setAttribute('aria-label', `Pot is ${Math.round(pct)} percent of the goal`);
+    track.setAttribute('aria-label', `Pot is ${Math.round(pct)} percent of the ${fmtMoney(EVENT.money.goal)} full-house goal`);
     const fill = el('div', 'pot-fill');
     fill.dataset.fill = pct.toFixed(1);
     track.appendChild(fill);
-    inner.appendChild(rv(track));
+    panel.appendChild(track);
 
-    const stats = el('div', 'pot-stats');
-    const seatsLeft = Math.max(0, seatsTotal() - EVENT.money.players);
-    [
-      [EVENT.money.players, 'Confirmed'],
-      [fmtMoney(EVENT.money.fee), 'Buy-in'],
-      [seatsLeft, 'Seats left']
-    ].forEach(([v, l]) => {
-      const s = el('div', 'stat');
-      s.appendChild(el('strong', null, String(v)));
-      s.appendChild(el('span', null, l));
-      stats.appendChild(s);
-    });
-    inner.appendChild(rv(stats));
+    panel.appendChild(el('p', 'pot-meta',
+      `<strong>${seatsLeft}</strong> seats left · ${Math.round(pct)}% of the ${fmtMoney(EVENT.money.goal)} full-house pot · grows with every confirmation`));
 
     if (Array.isArray(d.prizes) && d.prizes.length) {
       const grid = el('div', 'prizes');
@@ -285,14 +269,17 @@
         card.appendChild(el('span', 'prize-label', p.label || ''));
         grid.appendChild(card);
       });
-      inner.appendChild(rv(grid));
+      panel.appendChild(grid);
     }
 
-    if (d.note) inner.appendChild(rv(el('p', 'pot-note', d.note)));
+    sec.appendChild(rv(panel));
+    return sec;
   }
 
-  function buildFaq(d, inner, rv) {
-    inner.classList.add('slide-inner--faq');
+  function buildFaq(d) {
+    const rv = revealer();
+    const sec = el('section', 'section');
+    sec.id = 'faq';
 
     const head = el('div', 'faq-head');
     const headText = el('div', 'faq-headtext');
@@ -306,7 +293,7 @@
     expandBtn.type = collapseBtn.type = 'button';
     actions.append(expandBtn, collapseBtn);
     head.appendChild(actions);
-    inner.appendChild(rv(head));
+    sec.appendChild(rv(head));
 
     const list = el('div', 'faq-list');
     const items = [];
@@ -343,7 +330,7 @@
       list.appendChild(rv(item));
     });
 
-    inner.appendChild(list);
+    sec.appendChild(list);
 
     function setOpen(item, trig, open) {
       item.classList.toggle('open', open);
@@ -367,134 +354,17 @@
     });
 
     syncActions();
-  }
-
-  function buildEnd(d, inner, rv) {
-    inner.classList.add('slide-inner--center');
-    if (d.eyebrow) inner.appendChild(rv(el('p', 'eyebrow', d.eyebrow)));
-    inner.appendChild(rv(el('h2', 'title title--gradient', d.title || 'See you there')));
-    if (d.text) inner.appendChild(rv(el('p', 'lead', d.text)));
-
-    if (EVENT.confirmUrl) {
-      const cta = el('a', 'btn btn--primary btn--cta');
-      cta.href = EVENT.confirmUrl;
-      cta.target = '_blank';
-      cta.rel = 'noopener noreferrer';
-      cta.textContent = `${EVENT.confirmLabel} · ${fmtMoney(EVENT.money.fee)}`;
-      inner.appendChild(rv(cta));
-    }
-
-    const back = el('button', 'btn btn--ghost');
-    back.type = 'button';
-    back.textContent = 'Back to start';
-    back.setAttribute('aria-label', 'Back to the first slide');
-    back.addEventListener('click', () => goTo(0));
-    inner.appendChild(rv(back));
-  }
-
-  /* ---------- legacy builders (kept for flexibility) ---------- */
-
-  function buildCover(d, inner, rv) {
-    inner.classList.add('slide-inner--center');
-    if (d.eyebrow)  inner.appendChild(rv(el('p', 'eyebrow', d.eyebrow)));
-    inner.appendChild(rv(el('h1', 'title title--gradient', d.title || '')));
-    if (d.subtitle) inner.appendChild(rv(el('p', 'subtitle', d.subtitle)));
-    if (d.text)     inner.appendChild(rv(el('p', 'lead', d.text)));
-    if (d.hint !== false) inner.appendChild(rv(el('p', 'hint', d.hint || 'Swipe to continue')));
-  }
-
-  function buildContent(d, inner, rv) {
-    const hasImage = Boolean(d.image);
-    if (hasImage) inner.classList.add('split');
-
-    const col = el('div', 'col');
-    if (d.eyebrow) col.appendChild(rv(el('p', 'eyebrow', d.eyebrow)));
-    if (d.title)   col.appendChild(rv(el('h2', 'title title--sm', d.title)));
-    if (d.text)    col.appendChild(rv(el('p', 'lead', d.text)));
-
-    if (Array.isArray(d.bullets) && d.bullets.length) {
-      const ul = el('ul', 'bullets');
-      d.bullets.forEach(b => ul.appendChild(rv(el('li', null, b))));
-      col.appendChild(ul);
-    }
-
-    if (Array.isArray(d.keys) && d.keys.length) {
-      const keys = el('div', 'keys');
-      d.keys.forEach(k => {
-        const label = typeof k === 'string' ? k : k.key;
-        const desc  = typeof k === 'string' ? null : k.label;
-        const cap   = el('span', 'keycap');
-        cap.appendChild(el('kbd', null, label));
-        if (desc) cap.appendChild(el('span', 'keycap-label', desc));
-        keys.appendChild(cap);
-      });
-      col.appendChild(rv(keys));
-    }
-
-    inner.appendChild(col);
-
-    if (hasImage) {
-      const fig = el('figure', 'media');
-      const img = el('img');
-      img.src = d.image;
-      img.alt = d.imageAlt || d.title || '';
-      img.loading = 'lazy';
-      fig.appendChild(img);
-      inner.appendChild(rv(fig));
-    }
-  }
-
-  function buildCards(d, inner, rv) {
-    inner.classList.add('slide-inner--center');
-    if (d.eyebrow) inner.appendChild(rv(el('p', 'eyebrow', d.eyebrow)));
-    if (d.title)   inner.appendChild(rv(el('h2', 'title title--sm', d.title)));
-    if (d.text)    inner.appendChild(rv(el('p', 'lead', d.text)));
-
-    const grid = el('div', 'cards');
-    (d.cards || []).forEach((c, i) => {
-      const card = el('article', 'card');
-      card.appendChild(el('span', 'card-num', pad(i + 1)));
-      if (c.icon)  card.appendChild(el('span', 'card-icon', c.icon));
-      if (c.title) card.appendChild(el('h3', 'card-title', c.title));
-      if (c.text)  card.appendChild(el('p', 'card-text', c.text));
-      grid.appendChild(rv(card));
-    });
-    inner.appendChild(grid);
-  }
-
-  function buildSlide(data, idx) {
-    const type = data.type || 'content';
-    const sec  = el('section', `slide slide--${type}`);
-    sec.dataset.type = type;
-    sec.setAttribute('role', 'group');
-    sec.setAttribute('aria-label', data.nav || `Slide ${idx + 1}`);
-    if (data.accent)  sec.style.setProperty('--accent', data.accent);
-    if (data.accent2) sec.style.setProperty('--accent-2', data.accent2);
-
-    const rv    = revealer();
-    const inner = el('div', 'slide-inner');
-
-    if (type === 'home')       buildHome(data, inner, rv);
-    else if (type === 'how')   buildHow(data, inner, rv);
-    else if (type === 'pot')   buildPot(data, inner, rv);
-    else if (type === 'faq')   buildFaq(data, inner, rv);
-    else if (type === 'end')   buildEnd(data, inner, rv);
-    else if (type === 'cover') buildCover(data, inner, rv);
-    else if (type === 'cards') buildCards(data, inner, rv);
-    else                       buildContent(data, inner, rv);
-
-    sec.appendChild(inner);
     return sec;
   }
 
-  /* ---------- pot animation ---------- */
+  /* ---------- pot animation (runs once, when scrolled into view) ---------- */
 
-  function activatePot(sec) {
-    if (sec.dataset.potDone) return;
-    sec.dataset.potDone = '1';
+  function activatePot(panel) {
+    if (panel.dataset.potDone) return;
+    panel.dataset.potDone = '1';
 
-    const amt  = sec.querySelector('.pot-amount');
-    const fill = sec.querySelector('.pot-fill');
+    const amt  = panel.querySelector('.pot-amount');
+    const fill = panel.querySelector('.pot-fill');
     const target = Number(amt && amt.dataset.target) || 0;
     const pct = fill ? fill.dataset.fill + '%' : '0%';
 
@@ -517,73 +387,84 @@
     }));
   }
 
-  /* ---------- navigation ---------- */
+  /* ---------- scroll reveal + pot trigger ---------- */
 
-  function goTo(i) {
-    const total = state.els.length;
-    if (!total) return;
-    i = clamp(i, 0, total - 1);
-    if (i === state.index) return;
+  function setupObservers() {
+    const reveals = Array.from(page.querySelectorAll('.reveal'));
+    const panel = page.querySelector('.pot-panel');
 
-    const previous = state.els[state.index];
-    if (previous) previous.classList.remove('is-active');
+    if (REDUCE || !('IntersectionObserver' in window)) {
+      reveals.forEach(n => n.classList.add('in'));
+      if (panel) activatePot(panel);
+      return;
+    }
 
-    state.index = i;
-    const current = state.els[i];
-    current.classList.add('is-active');
-    current.scrollTop = 0;
-    if (current.dataset.type === 'pot') activatePot(current);
-    syncHud();
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          en.target.classList.add('in');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: .12, rootMargin: '0px 0px -8% 0px' });
+    reveals.forEach(n => io.observe(n));
+
+    if (panel) {
+      const potIo = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (en.isIntersecting) {
+            activatePot(panel);
+            potIo.disconnect();
+          }
+        });
+      }, { threshold: .35 });
+      potIo.observe(panel);
+    }
   }
 
-  const next = () => goTo(state.index + 1);
-  const prev = () => goTo(state.index - 1);
+  /* ---------- scroll progress ---------- */
 
-  function syncHud() {
-    const total = state.els.length;
-    counter.textContent = `${pad(state.index + 1)} / ${pad(total)}`;
-    bar.style.width = total > 1 ? (state.index / (total - 1)) * 100 + '%' : '100%';
-    Array.from(dotsEl.children).forEach((dot, i) => {
-      dot.classList.toggle('is-active', i === state.index);
-      dot.setAttribute('aria-current', i === state.index ? 'true' : 'false');
-    });
-    prevBtn.disabled = state.index === 0;
-    nextBtn.disabled = state.index === total - 1;
+  let progressTicking = false;
+  function updateProgress() {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    bar.style.width = (max > 0 ? clamp((doc.scrollTop / max) * 100, 0, 100) : 0) + '%';
+    progressTicking = false;
   }
+
+  window.addEventListener('scroll', () => {
+    if (!progressTicking) {
+      progressTicking = true;
+      requestAnimationFrame(updateProgress);
+    }
+  }, { passive: true });
+
+  window.addEventListener('resize', updateProgress);
 
   /* ---------- render ---------- */
 
   function render(data) {
-    const slides = Array.isArray(data) ? data : (data.slides || []);
-    if (!slides.length) throw new Error('The config contains no slides.');
+    if (data.meta && data.meta.title) document.title = data.meta.title;
 
-    if (!Array.isArray(data) && data.meta && data.meta.title) {
-      document.title = data.meta.title;
+    page.appendChild(buildHero());
+    page.appendChild(buildPlan(data.plan || {}));
+    page.appendChild(buildPot(data.pot || {}));
+    page.appendChild(buildFaq(data.faq || {}));
+    page.appendChild(el('footer', 'footer', data.footer || 'See you on the night 🎄'));
+
+    if (EVENT.confirmUrl) {
+      const cta = el('a', 'btn--primary');
+      cta.href = EVENT.confirmUrl;
+      cta.target = '_blank';
+      cta.rel = 'noopener noreferrer';
+      cta.textContent = EVENT.confirmLabel;
+      ctaBar.appendChild(cta);
+    } else {
+      ctaBar.style.display = 'none';
     }
 
-    state.ids = slides.map(s => s.id || '');
-    state.els = slides.map((slide, i) => buildSlide(slide, i));
-    state.els.forEach(node => stage.appendChild(node));
-
-    slides.forEach((s, i) => {
-      const label = s.nav || `Slide ${i + 1}`;
-      const dot = el('button', 'dot-btn');
-      dot.type = 'button';
-      dot.title = label;
-      dot.setAttribute('aria-label', `Go to ${label}`);
-      dot.addEventListener('click', () => goTo(i));
-      dotsEl.appendChild(dot);
-    });
-
-    // Cross-slide links (e.g. the pot tile on Home).
-    stage.querySelectorAll('[data-goto]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const i = state.ids.indexOf(btn.dataset.goto);
-        if (i > -1) goTo(i);
-      });
-    });
-
-    goTo(0);
+    setupObservers();
+    updateProgress();
   }
 
   /* ---------- error state ---------- */
@@ -592,58 +473,14 @@
     console.error(err);
     const overlay = el('div', 'error-overlay');
     const card    = el('div', 'error-card');
-    card.appendChild(el('h2', 'error-title', 'Config not loaded'));
+    card.appendChild(el('h2', 'error-title', 'Content not loaded'));
     card.appendChild(el('p', 'error-text', `<code>${String(err.message || err)}</code>`));
     card.appendChild(el('p', 'error-text',
-      'Make sure <code>slides.js</code> is in the same folder as <code>index.html</code> ' +
+      'Make sure <code>content.js</code> is in the same folder as <code>index.html</code> ' +
       'and is loaded <em>before</em> <code>app.js</code>.'));
     overlay.appendChild(card);
     document.body.appendChild(overlay);
   }
-
-  /* ---------- input ---------- */
-
-  prevBtn.addEventListener('click', () => { prev(); prevBtn.blur(); });
-  nextBtn.addEventListener('click', () => { next(); nextBtn.blur(); });
-
-  window.addEventListener('keydown', e => {
-    const t = e.target;
-    if (t && t.closest && t.closest('button, a, input, textarea, select, [contenteditable="true"]')) return;
-    switch (e.key) {
-      case 'ArrowRight':
-      case 'ArrowDown':
-      case 'PageDown':
-      case ' ':
-        e.preventDefault(); next(); break;
-      case 'ArrowLeft':
-      case 'ArrowUp':
-      case 'PageUp':
-        e.preventDefault(); prev(); break;
-      case 'Home':
-        e.preventDefault(); goTo(0); break;
-      case 'End':
-        e.preventDefault(); goTo(state.els.length - 1); break;
-    }
-  });
-
-  // Horizontal swipe changes slides; vertical scroll stays native (touch-action: pan-y).
-  let pointerStart = null;
-  stage.addEventListener('pointerdown', e => {
-    if (!e.isPrimary || e.pointerType === 'mouse') return;
-    if (e.target.closest('button, a, input, textarea, select, [contenteditable="true"]')) return;
-    pointerStart = { x: e.clientX, y: e.clientY, id: e.pointerId };
-  }, { passive: true });
-
-  stage.addEventListener('pointerup', e => {
-    if (!pointerStart || e.pointerId !== pointerStart.id) return;
-    const dx = e.clientX - pointerStart.x;
-    const dy = e.clientY - pointerStart.y;
-    pointerStart = null;
-    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
-    dx < 0 ? next() : prev();
-  }, { passive: true });
-
-  stage.addEventListener('pointercancel', () => { pointerStart = null; }, { passive: true });
 
   /* ---------- snowfall ---------- */
 
@@ -744,10 +581,10 @@
 
   (function init() {
     try {
-      const data = window.SLIDES_DATA;
+      const data = window.XGN_DATA;
       if (!data) {
         throw new Error(
-          'slides.js was not loaded. Check that <script src="slides.js"></script> ' +
+          'content.js was not loaded. Check that <script src="content.js"></script> ' +
           'appears before <script src="app.js"></script> in index.html.'
         );
       }
@@ -755,6 +592,7 @@
       const DEFAULTS = {
         name: 'Xmas Games Night',
         edition: '3rd Edition',
+        tagline: '',
         confirmBy: '2026-11-29T23:59:59+00:00',
         nightAt: '2026-12-27T19:00:00+00:00',
         timeZone: 'Europe/London',

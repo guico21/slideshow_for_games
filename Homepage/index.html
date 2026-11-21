@@ -24,37 +24,23 @@
   <div class="bg-glow" aria-hidden="true"></div>
   <div class="lights" aria-hidden="true"></div>
 
-  <header class="hud">
-    <div class="hud-brand" aria-hidden="true">
-      <span>🎄</span>
-      <span class="brand-full">Xmas Games Night</span>
-      <span class="brand-short">XGN</span>
-    </div>
-    <div class="hud-counter" id="slideCounter" aria-label="Current slide">01 / 01</div>
-  </header>
-
+  <!-- Scroll progress -->
   <div class="progress" aria-hidden="true">
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
-  <main id="stage" class="stage" aria-live="polite" aria-atomic="false"></main>
+  <!-- Single scrolling page, rendered from content.js -->
+  <main id="page" class="page"></main>
 
-  <nav class="controls" aria-label="Slide navigation">
-    <button id="prevBtn" class="btn" type="button" aria-label="Previous slide" disabled>
-      <span aria-hidden="true">&#9664;</span>
-    </button>
-    <div class="dots" id="dots" aria-label="Choose a slide"></div>
-    <button id="nextBtn" class="btn" type="button" aria-label="Next slide">
-      <span aria-hidden="true">&#9654;</span>
-    </button>
-  </nav>
+  <!-- Always-visible confirm button -->
+  <div class="cta-bar" id="ctaBar"></div>
 
   <noscript>
     <div class="noscript">🎄 Xmas Games Night needs JavaScript enabled to show the live countdown, pot and FAQs.</div>
   </noscript>
 
-  <!-- Keep slides.js before app.js. All event content lives in slides.js. -->
-  <script src="slides.js"></script>
+  <!-- Keep content.js before app.js. All copy & settings live in content.js. -->
+  <script src="content.js"></script>
   <script src="app.js" defer></script>
 </body>
 </html>
