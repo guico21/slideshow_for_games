@@ -5,8 +5,8 @@ window.XGN_DATA = {
   meta: { title: 'Xmas Games Night — 3rd Edition' },
 
   event: {
-    name: 'Xmas Games Night',
-    edition: '3rd Edition',
+    name: 'Serata Giochi Natalizia',
+    edition: '3za Ediziome',
     tagline: 'Eccoci',
 
     // London time (GMT). For an Italian venue: timeZone 'Europe/Rome', offsets +01:00.
