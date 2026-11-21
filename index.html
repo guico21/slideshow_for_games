@@ -1,52 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>FROSTFALL — Holiday Field Manual</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06121a" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="FROSTFALL holiday field manual." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="FROSTFALL | Holiday Field Manual" />
+  <meta property="og:description" content="A festive, swipe-through holiday field manual." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>FROSTFALL | Holiday Field Manual</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- falling snow -->
   <canvas id="snow" class="snow" aria-hidden="true"></canvas>
-
-  <!-- aurora / warm glow -->
   <div class="bg-glow" aria-hidden="true"></div>
-
-  <!-- string of lights along the top -->
   <div class="lights" aria-hidden="true"></div>
 
-  <!-- HUD -->
   <header class="hud">
     <div class="brand">
-      <span class="brand-dot"></span>
+      <span class="brand-dot" aria-hidden="true"></span>
       <span id="brandText">FROSTFALL</span>
     </div>
-    <div class="hud-counter" id="slideCounter">01 / 01</div>
+    <div class="hud-counter" id="slideCounter" aria-label="Current slide">01 / 01</div>
   </header>
 
-  <!-- progress -->
-  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="progress" aria-hidden="true">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
 
-  <!-- slides injected here -->
-  <main id="stage" class="stage" aria-live="polite"></main>
+  <main id="stage" class="stage" aria-live="polite" aria-atomic="false"></main>
 
-  <!-- controls -->
   <nav class="controls" aria-label="Slide navigation">
-    <button id="prevBtn" class="btn" type="button" aria-label="Previous slide">&#9664;</button>
-    <div class="dots" id="dots"></div>
-    <button id="nextBtn" class="btn" type="button" aria-label="Next slide">&#9654;</button>
+    <button id="prevBtn" class="btn" type="button" aria-label="Previous slide" disabled>
+      <span aria-hidden="true">&#9664;</span>
+    </button>
+    <div class="dots" id="dots" aria-label="Choose a slide"></div>
+    <button id="nextBtn" class="btn" type="button" aria-label="Next slide">
+      <span aria-hidden="true">&#9654;</span>
+    </button>
   </nav>
 
-  <!-- 1) config first — defines window.SLIDES_DATA -->
+  <!-- Keep slides.js before app.js. Your existing slide content stays in slides.js. -->
   <script src="slides.js"></script>
-  <!-- 2) then the engine -->
-  <script src="app.js"></script>
+  <script src="app.js" defer></script>
 </body>
 </html>

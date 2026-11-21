@@ -43,7 +43,7 @@
     if (d.text)     inner.appendChild(rv(el('p', 'lead', d.text)));
     if (d.hint !== false) {
       inner.appendChild(
-        rv(el('p', 'hint', d.hint || 'Press <kbd>&rarr;</kbd> or swipe to continue'))
+        rv(el('p', 'hint', d.hint || 'Swipe to continue'))
       );
     }
   }
@@ -113,8 +113,10 @@
     inner.appendChild(rv(el('h2', 'title title--gradient', d.title || 'MERRY MISCHIEF')));
     if (d.text) inner.appendChild(rv(el('p', 'lead', d.text)));
 
-    const btn = el('button', 'btn btn--primary', d.button || '&#8634; Restart');
+    const btn = el('button', 'btn btn--primary');
     btn.type = 'button';
+    btn.textContent = 'Back';
+    btn.setAttribute('aria-label', 'Back to the first slide');
     btn.addEventListener('click', () => goTo(0));
     inner.appendChild(rv(btn));
   }
@@ -221,7 +223,8 @@
 
   window.addEventListener('keydown', e => {
     const t = e.target;
-    if (t && t.closest && t.closest('input, textarea, select')) return;
+    // Let focused controls keep their normal keyboard behaviour.
+    if (t && t.closest && t.closest('button, a, input, textarea, select, [contenteditable="true"]')) return;
     switch (e.key) {
       case 'ArrowRight':
       case 'ArrowDown':
@@ -239,20 +242,25 @@
     }
   });
 
-  let startX = 0, startY = 0, tracking = false;
-  stage.addEventListener('touchstart', e => {
-    const t = e.changedTouches[0];
-    startX = t.clientX; startY = t.clientY; tracking = true;
+  // Pointer gestures support touch and stylus while CSS touch-action: pan-y
+  // keeps normal vertical reading/scrolling available on mobile.
+  let pointerStart = null;
+  stage.addEventListener('pointerdown', e => {
+    if (!e.isPrimary || e.pointerType === 'mouse') return;
+    if (e.target.closest('button, a, input, textarea, select, [contenteditable="true"]')) return;
+    pointerStart = { x: e.clientX, y: e.clientY, id: e.pointerId };
   }, { passive: true });
-  stage.addEventListener('touchend', e => {
-    if (!tracking) return;
-    tracking = false;
-    const t  = e.changedTouches[0];
-    const dx = t.clientX - startX;
-    const dy = t.clientY - startY;
-    if (Math.abs(dx) < 55 || Math.abs(dx) < Math.abs(dy)) return;
+
+  stage.addEventListener('pointerup', e => {
+    if (!pointerStart || e.pointerId !== pointerStart.id) return;
+    const dx = e.clientX - pointerStart.x;
+    const dy = e.clientY - pointerStart.y;
+    pointerStart = null;
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
     dx < 0 ? next() : prev();
   }, { passive: true });
+
+  stage.addEventListener('pointercancel', () => { pointerStart = null; }, { passive: true });
 
   /* ---------- snowfall ---------- */
 
@@ -282,12 +290,14 @@
     }
 
     function seed() {
-      const count = Math.round(clamp((W * H) / 16000, 40, 150));
+      const compact = window.matchMedia('(max-width: 760px)').matches;
+      const count = Math.round(clamp((W * H) / (compact ? 28000 : 16000), compact ? 22 : 40, compact ? 72 : 150));
       flakes = Array.from({ length: count }, () => makeFlake(true));
     }
 
     function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const compact = window.matchMedia('(max-width: 760px)').matches;
+      const dpr = Math.min(window.devicePixelRatio || 1, compact ? 1.5 : 2);
       W = window.innerWidth;
       H = window.innerHeight;
       canvas.width  = Math.floor(W * dpr);
