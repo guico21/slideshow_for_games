@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#06121a" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="Xmas Games Night · 3rd Edition — confirm your spot by 29 Nov, 19:00. London Bridge · 27 December · 19:00." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Xmas Games Night · 3rd Edition" />
+  <meta property="og:description" content="One night. Four rounds. Zero mercy. London Bridge · 27 December · 19:00." />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Xmas Games Night" />
+
+  <title>Xmas Games Night · 3rd Edition</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="snow" class="snow" aria-hidden="true"></canvas>
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="lights" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a href="#top" class="brand">XG·N</a>
+    <nav class="topnav" aria-label="Page sections">
+      <a href="#details">Details</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQs</a>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="details" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <p class="eyebrow">27 December · 19:00 · London Bridge</p>
+
+        <div class="title-wrap">
+          <h1 id="hero-title" class="title title--gradient">Xmas Games Night</h1>
+          <span class="sticker" aria-label="Third edition">3rd Edition</span>
+        </div>
+
+        <p class="lead">
+          One night. Four rounds. Zero mercy. Confirm your spot before
+          <strong>29 November, 19:00</strong> and get ready for the most
+          competitive festive night of the year.
+        </p>
+
+        <!-- Countdowns -->
+        <div class="countdown-grid" aria-label="Countdowns">
+          <div class="count-card" data-key="confirm">
+            <p class="count-label">Confirm by</p>
+            <p class="count-date">29 Nov · 19:00</p>
+            <div class="count-values">
+              <div class="count-unit"><span class="count-num" data-unit="days">00</span><span class="count-unit-label">Days</span></div>
+              <div class="count-unit"><span class="count-num" data-unit="hours">00</span><span class="count-unit-label">Hrs</span></div>
+              <div class="count-unit"><span class="count-num" data-unit="minutes">00</span><span class="count-unit-label">Min</span></div>
+              <div class="count-unit"><span class="count-num" data-unit="seconds">00</span><span class="count-unit-label">Sec</span></div>
+            </div>
+          </div>
+
+          <div class="count-card" data-key="night">
+            <p class="count-label">Game night</p>
+            <p class="count-date">27 Dec · 19:00</p>
+            <div class="count-values">
+              <div class="count-unit"><span class="count-num" data-unit="days">00</span><span class="count-unit-label">Days</span></div>
+              <div class="count-unit"><span class="count-num" data-unit="hours">00</span><span class="count-unit-label">Hrs</span></div>
+              <div class="count-unit"><span class="count-num" data-unit="minutes">00</span><span class="count-unit-label">Min</span></div>
+              <div class="count-unit"><span class="count-num" data-unit="seconds">00</span><span class="count-unit-label">Sec</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info stack: location + funds -->
+        <div class="info-stack">
+          <div class="info-card">
+            <div class="info-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                   stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div class="info-body">
+              <p class="info-title">London Bridge</p>
+              <p class="info-text">London Bridge, London, UK</p>
+              <a class="info-link"
+                 href="https://www.google.com/maps/dir/?api=1&destination=London+Bridge+London+UK"
+                 target="_blank" rel="noopener noreferrer">
+                Open directions
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7"/><path d="M8 7h9v9"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon" aria-hidden="true">💷</div>
+            <div class="info-body">
+              <p class="info-title">Night fund</p>
+              <p class="info-text">
+                <strong>£420</strong> of £600 raised
+              </p>
+              <div class="fund-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                   aria-valuenow="70" aria-label="Fund progress">
+                <div class="fund-fill" style="width:70%"></div>
+              </div>
+              <div class="fund-meta">
+                <span><strong>70%</strong> funded</span>
+                <span>£35 per player · covers food, drinks &amp; prizes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="section-inner">
+        <p class="eyebrow">The run of play</p>
+        <h2 id="how-title" class="title title--sm">How the night works</h2>
+        <p class="lead">Four rounds, one leaderboard, and a strict no-sulk policy.</p>
+
+        <div class="cards">
+          <article class="card">
+            <span class="card-num">01</span>
+            <span class="card-icon" aria-hidden="true">🎟️</span>
+            <h3 class="card-title">Confirm</h3>
+            <p class="card-text">Reserve your seat by 29 Nov, 19:00. Your £35 entry goes straight into the night fund.</p>
+          </article>
+
+          <article class="card">
+            <span class="card-num">02</span>
+            <span class="card-icon" aria-hidden="true">📍</span>
+            <h3 class="card-title">Arrive</h3>
+            <p class="card-text">Meet at London Bridge on 27 Dec from 19:00. Bring your game face and a festive jumper.</p>
+          </article>
+
+          <article class="card">
+            <span class="card-num">03</span>
+            <span class="card-icon" aria-hidden="true">🎲</span>
+            <h3 class="card-title">Play</h3>
+            <p class="card-text">Four timed rounds across party classics. Points are tracked live on the night board.</p>
+          </article>
+
+          <article class="card">
+            <span class="card-num">04</span>
+            <span class="card-icon" aria-hidden="true">🏆</span>
+            <h3 class="card-title">Crown</h3>
+            <p class="card-text">Top three take the prizes. Everyone gets food, drinks and bragging rights.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="section-inner">
+        <p class="eyebrow">Good questions</p>
+        <h2 id="faq-title" class="title title--sm">FAQs</h2>
+        <p class="lead">Tap any question to open it, or use the buttons to expand or collapse everything.</p>
+
+        <div class="faq-actions">
+          <button class="btn-mini" id="expandAll" type="button">Expand all</button>
+          <button class="btn-mini" id="collapseAll" type="button">Collapse all</button>
+        </div>
+
+        <div class="faq-list" id="faqList">
+          <details class="faq-item">
+            <summary>How do I confirm my spot?</summary>
+            <div class="faq-a">Message the organiser and send your £35 entry before 29 November, 19:00. Your place is only locked once the payment lands in the night fund.</div>
+          </details>
+          <details class="faq-item">
+            <summary>What does the £35 cover?</summary>
+            <div class="faq-a">Food, drinks, game materials and prizes for the night. Any leftover fund rolls into the next edition.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Can I come if I don't know anyone?</summary>
+            <div class="faq-a">Absolutely. The rounds are designed to mix teams. Come solo, leave with a new rivalry.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Is there a dress code?</summary>
+            <div class="faq-a">Festive casual. Christmas jumpers are encouraged but not mandatory. Comfortable shoes are a good idea.</div>
+          </details>
+          <details class="faq-item">
+            <summary>What happens if I can't make it?</summary>
+            <div class="faq-a">Tell the organiser as early as possible. Entry fees are non-refundable once the fund has been spent, but you may be able to transfer your spot.</div>
+          </details>
+          <details class="faq-item">
+            <summary>Where exactly at London Bridge?</summary>
+            <div class="faq-a">We meet at the main London Bridge station entrance on the riverside side. Use “Open directions” at the top for a turn-by-turn map from wherever you are.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <p>Xmas Games Night · 3rd Edition · <span id="year"></span></p>
+    </footer>
+
+  </main>
+
+  <noscript>
+    <div class="noscript">
+      Please enable JavaScript so the countdowns update live.
+    </div>
+  </noscript>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
