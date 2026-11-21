@@ -6,24 +6,24 @@ window.XGN_DATA = {
 
   event: {
     name: 'Serata Giochi Natalizia',
-    edition: '3za Ediziome',
-    tagline: 'Eccoci',
+    edition: '3 Ediziome',
+    tagline: 'Per il terzo anno consecutivo, una notte spumeggiate, fatta di risate, movimenti di bacino, giochi esilaranti e unica compagnia.  ',
 
     // London time (GMT). For an Italian venue: timeZone 'Europe/Rome', offsets +01:00.
-    confirmBy: '2026-11-28T23:59:59+00:00',   // payment deadline: Sat 28 Nov
+    confirmBy: '2026-11-29T23:59:59+00:00',   // payment deadline: Sat 28 Nov
     nightAt:   '2026-12-27T19:00:00+00:00',   // doors open
     timeZone:  'Europe/London',
 
     location: {
-      name: 'London Bridge',                  // update once the venue is booked
-      detail: 'Tap for distance & directions',
-      mapsQuery: 'London Bridge, London, UK'
+      name: 'Location',                  // update once the venue is booked
+      detail: 'Location non confermata',
+      mapsQuery: 'Casarano, LE'
     },
 
     money: {
       currency: 'EUR',
       fee: 22,          // € per player (shown on the Confirm button)
-      players: 20,      // shown as a badge under the budget
+      players: 0,      // shown as a badge under the budget
       collected: 0      // <- change this number as payments arrive
     },
 
@@ -31,21 +31,21 @@ window.XGN_DATA = {
     // Until then, clicking Confirm opens the "not ready yet" Santa popup.
     paymentReady: false,
     confirmUrl: '',
-    confirmLabel: 'Confirm your spot',
+    confirmLabel: 'Voglio partecipare!',
 
     // Organiser WhatsApp (international format, digits only) + prefilled message.
     organiserWhatsApp: '447746699443',
-    whatsappText: 'Hi! About Xmas Games Night 🎄…'
+    whatsappText: 'Hey, Guì, riguardo la serata giochi...'
   },
 
   venue: {
-    text: 'With this year’s turnout we’re renting a venue. If you have a space (or room) available to accommodate everyone, please write to me privately.',
-    cta: 'Message the organiser'
+    text: 'Visto l'interesse generale superiore ai 16 giocatori, quest'anno si sta valutaneo l'affitto di un locale esterno.',
+    cta: 'Ho una casa/spazio a disposizione per ospitare!'
   },
 
   money: {
-    title: 'Fees & prizes',
-    text: 'Everyone chips in — here’s where the money goes.',
+    title: 'Quota per giocatore e Premi',
+    text: 'Ogni giocatore partecipa con una quota fissa, uguale per tutti i giocatori.',
     covers: [
       { icon: '🏆', label: 'Prizes' },
       { icon: '🍕', label: 'Food' },
@@ -54,8 +54,8 @@ window.XGN_DATA = {
       { icon: '🏠', label: 'Venue' },
       { icon: '🎲', label: 'Misc' }
     ],
-    surplus: 'Any money left over — anything not spent and not part of the prize pool — is divided equally among all players and returned on the evening itself or via bank transfer.',
-    payNote: 'Pay by bank transfer using the Confirm button below.',
+    surplus: 'I soldi che acvanzeranno.',
+    payNote: 'Le quota si versa online iscivendosi alla serata giochi.',
     prizes: [
       { medal: '🥇', label: '1st place', note: 'To be confirmed' },
       { medal: '🥈', label: '2nd place', note: 'To be confirmed' },
@@ -103,5 +103,5 @@ window.XGN_DATA = {
     ]
   },
 
-  footer: 'Questions? Message the organiser. See you on the night 🎄'
+  footer: 'Questions? Message the organiser.🎄'
 };
