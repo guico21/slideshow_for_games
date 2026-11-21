@@ -5,93 +5,120 @@
 (() => {
   'use strict';
 
-  /* ---------- config: edit these dates to update countdowns ---------- */
-
+  /* ------------------------------------------------------------
+     CONFIG — edit these to update the page.
+     Months are 0-indexed (0 = January, 10 = November, 11 = December).
+     ------------------------------------------------------------ */
   const CONFIG = {
-    confirm: { month: 10, day: 29, hour: 19, minute: 0 }, // 29 Nov, 19:00 (month is 0-indexed)
-    night:   { month: 11, day: 27, hour: 19, minute: 0 }  // 27 Dec, 19:00
+    year: 2026,
+
+    confirm: { month: 10, day: 28, hour: 19, minute: 0 }, // Sat 28 Nov 2026, 19:00
+    night:   { month: 11, day: 27, hour: 19, minute: 0 }, // Sun 27 Dec 2026, 19:00
+
+    fund: {
+      currency:         '€',
+      perPlayer:        22,
+      playersConfirmed: 20,
+      playerTarget:     30
+    }
   };
+
+  /* ---------- build targets ---------- */
+
+  const makeDate = (c, y) =>
+    new Date(y, c.month, c.day, c.hour, c.minute, 0, 0);
+
+  const targetConfirm = makeDate(CONFIG.confirm, CONFIG.year);
+  const targetNight   = makeDate(CONFIG.night,   CONFIG.year);
 
   const pad = n => String(n).padStart(2, '0');
 
-  /* ---------- resolve targets (auto roll to next year if past) ---------- */
+  const formatDate = d =>
+    d.toLocaleDateString('en-GB', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
 
-  function resolveTargets() {
-    const now = new Date();
-    let year = now.getFullYear();
+  /* ---------- countdown (days only) ---------- */
 
-    const makeDate = (c, y) =>
-      new Date(y, c.month, c.day, c.hour, c.minute, 0, 0);
-
-    let night   = makeDate(CONFIG.night, year);
-    let confirm = makeDate(CONFIG.confirm, year);
-
-    if (now > night) {
-      year += 1;
-      night   = makeDate(CONFIG.night, year);
-      confirm = makeDate(CONFIG.confirm, year);
-    }
-
-    return { confirm, night };
-  }
-
-  const targets = resolveTargets();
-
-  /* ---------- update one countdown card ---------- */
-
-  function updateCard(card, target) {
+  function renderCountdown(card, target) {
     if (!card || !Number.isFinite(target)) return;
 
     const diff = target - Date.now();
+    const daysEl = card.querySelector('.count-num[data-unit="days"]');
 
     if (diff <= 0) {
-      if (!card.classList.contains('is-closed')) {
-        card.classList.add('is-closed');
-        const values = card.querySelector('.count-values');
-        if (values) {
-          values.innerHTML =
-            `<span class="count-closed">${
-              card.dataset.key === 'confirm'
-                ? 'Confirmation closed'
-                : 'Night passed'
-            }</span>`;
-        }
+      card.classList.add('is-closed');
+      const wrap = card.querySelector('.count-days');
+      if (wrap && !wrap.dataset.replaced) {
+        wrap.dataset.replaced = '1';
+        wrap.innerHTML =
+          `<span class="count-closed">${
+            card.dataset.key === 'confirm'
+              ? 'Confirmation closed'
+              : 'Night passed'
+          }</span>`;
       }
       return;
     }
 
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor(diff / 3600000) % 24;
-    const m = Math.floor(diff / 60000) % 60;
-    const s = Math.floor(diff / 1000) % 60;
-
-    const set = (unit, value) => {
-      const node = card.querySelector(`.count-num[data-unit="${unit}"]`);
-      if (node) node.textContent = pad(value);
-    };
-
-    set('days', d);
-    set('hours', h);
-    set('minutes', m);
-    set('seconds', s);
+    const days = Math.ceil(diff / 86400000);
+    if (daysEl) daysEl.textContent = String(days);
   }
 
-  function updateAll() {
-    document.querySelectorAll('.count-card').forEach(card => {
-      const key = card.dataset.key;
-      if (key === 'confirm') updateCard(card, targets.confirm.getTime());
-      if (key === 'night')   updateCard(card, targets.night.getTime());
-    });
+  function updateCountdowns() {
+    const confirmCard = document.querySelector('.count-card[data-key="confirm"]');
+    const nightCard   = document.querySelector('.count-card[data-key="night"]');
+    renderCountdown(confirmCard, targetConfirm.getTime());
+    renderCountdown(nightCard,   targetNight.getTime());
   }
 
-  let timer = null;
-  function startCountdowns() {
-    updateAll();
-    if (timer) clearInterval(timer);
-    timer = setInterval(updateAll, 1000);
+  /* ---------- dates ---------- */
+
+  function fillDates() {
+    const confirmEl = document.querySelector('[data-date="confirm"]');
+    const nightEl   = document.querySelector('[data-date="night"]');
+
+    if (confirmEl) {
+      confirmEl.textContent = formatDate(targetConfirm) + ' · 19:00';
+    }
+    if (nightEl) {
+      nightEl.textContent = formatDate(targetNight) + ' · 19:00';
+    }
   }
 
-  /* ---------- FAQ expand / collapse all ---------- */
+  /* ---------- funds ---------- */
+
+  function fillFunds() {
+    const { currency, perPlayer, playersConfirmed, playerTarget } = CONFIG.fund;
+
+    const raised = perPlayer * playersConfirmed;
+    const target = perPlayer * playerTarget;
+    const pct    = Math.min(100, Math.round((raised / target) * 100));
+
+    const amountEl = document.querySelector('[data-fund="raised"]');
+    const subEl    = document.querySelector('[data-fund="sub"]');
+    const fillEl   = document.querySelector('[data-fund="fill"]');
+    const metaEl   = document.querySelector('[data-fund="meta"]');
+    const progEl   = document.querySelector('.fund-progress');
+
+    if (amountEl) amountEl.textContent = currency + raised;
+    if (subEl)    subEl.textContent    = `${playersConfirmed} players · ${currency}${perPlayer} each`;
+    if (fillEl) {
+      // animate on load
+      requestAnimationFrame(() => {
+        setTimeout(() => { fillEl.style.width = pct + '%'; }, 80);
+      });
+    }
+    if (metaEl) {
+      metaEl.innerHTML = `<strong>${pct}%</strong> of target · ${currency}${target}`;
+    }
+    if (progEl) progEl.setAttribute('aria-valuenow', String(pct));
+  }
+
+  /* ---------- FAQ expand / collapse ---------- */
 
   function wireFaq() {
     const list = document.getElementById('faqList');
@@ -112,10 +139,10 @@
 
   function setYear() {
     const y = document.getElementById('year');
-    if (y) y.textContent = new Date().getFullYear();
+    if (y) y.textContent = String(new Date().getFullYear());
   }
 
-  /* ---------- snowfall (unchanged aesthetic) ---------- */
+  /* ---------- snowfall ---------- */
 
   function snowfall() {
     const canvas = document.getElementById('snow');
@@ -217,7 +244,10 @@
   /* ---------- boot ---------- */
 
   function init() {
-    startCountdowns();
+    fillDates();
+    fillFunds();
+    updateCountdowns();
+    setInterval(updateCountdowns, 60000); // refresh once a minute
     wireFaq();
     setYear();
     snowfall();
