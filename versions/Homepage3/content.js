@@ -7,7 +7,7 @@ window.XGN_DATA = {
   event: {
     name: 'Xmas Games Night',
     edition: '3rd Edition',
-    tagline: '',
+    tagline: 'Eccoci',
 
     // London time (GMT). For an Italian venue: timeZone 'Europe/Rome', offsets +01:00.
     confirmBy: '2026-11-28T23:59:59+00:00',   // payment deadline: Sat 28 Nov
