@@ -1,0 +1,268 @@
+/* ============================================================
+   OPTIONAL bottom landscape: snowy hills, lit Xmas tree,
+   waving snowman. Reveals as the user scrolls (--scene 0→1,
+   set by app.js). Removing this file removes the whole scene.
+   ============================================================ */
+
+.landscape {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: min(38vh, 320px);
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: var(--scene, 0);
+}
+
+/* moon glow */
+.landscape::before {
+  content: "";
+  position: absolute;
+  top: -50px; right: 10%;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(191, 233, 255, .22), transparent 65%);
+}
+
+/* readability scrim over the upper part of the scene */
+.landscape::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: linear-gradient(180deg, rgba(6, 18, 26, .92) 0%, rgba(6, 18, 26, .4) 30%, transparent 62%);
+}
+
+/* ---- hills ---- */
+
+.ls-hill { position: absolute; border-radius: 50% 50% 0 0 / 100% 100% 0 0; }
+
+.ls-hill--back {
+  left: -25%; bottom: -34%;
+  width: 110%; height: 80%;
+  z-index: 1;
+  background: linear-gradient(180deg, #9fc3dc, #5f88a6 70%, #4a6f8c);
+  opacity: .8;
+  transform: translateY(calc((1 - var(--scene, 0)) * 55%));
+}
+
+.ls-hill--mid {
+  right: -30%; bottom: -40%;
+  width: 120%; height: 84%;
+  z-index: 2;
+  background: linear-gradient(180deg, #c4e0f1, #8fb4cd 65%, #6d92ad);
+  opacity: .9;
+  transform: translateY(calc((1 - var(--scene, 0)) * 40%));
+}
+
+.ls-hill--front {
+  left: -15%; bottom: -48%;
+  width: 135%; height: 82%;
+  z-index: 3;
+  background:
+    radial-gradient(circle at 22% 26%, rgba(255, 255, 255, .9) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 58% 18%, rgba(255, 255, 255, .8) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, .85) 0 1.5px, transparent 2.5px),
+    linear-gradient(180deg, #eef7fd, #c2dcec 55%, #9dbfd6);
+  transform: translateY(calc((1 - var(--scene, 0)) * 28%));
+}
+
+/* ---- Xmas tree ---- */
+
+.ls-tree {
+  position: absolute;
+  left: 9%; bottom: 23%;
+  width: clamp(64px, 9vw, 96px);
+  height: clamp(96px, 14vw, 140px);
+  z-index: 4;
+  transform: translateY(calc((1 - var(--scene, 0)) * 22%));
+  transform-origin: bottom center;
+  filter: drop-shadow(0 10px 14px rgba(4, 12, 18, .45));
+  animation: lsSway 6s ease-in-out infinite alternate;
+}
+
+@keyframes lsSway { from { rotate: -1deg; } to { rotate: 1.2deg; } }
+
+.ls-tier {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  clip-path: polygon(50% 0, 0 100%, 100% 100%);
+  background: linear-gradient(180deg, #eaf6ff 0 13%, #2f8f6b 13%, #1c5a43);
+}
+
+.ls-tier--1 { top: 0;   width: 56%;  height: 38%; }
+.ls-tier--2 { top: 24%; width: 78%;  height: 40%; }
+.ls-tier--3 { top: 50%; width: 100%; height: 42%; }
+
+.ls-trunk {
+  position: absolute;
+  left: 50%; bottom: -8%;
+  transform: translateX(-50%);
+  width: 16%; height: 14%;
+  background: linear-gradient(#7a4a2b, #5b3620);
+  border-radius: 2px;
+}
+
+.ls-star {
+  position: absolute;
+  left: 50%; top: -9%;
+  transform: translateX(-50%);
+  width: 19%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 35% 30%, #fff3c9, #ffcf6b 60%, #f0a83c);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  filter: drop-shadow(0 0 8px rgba(255, 207, 107, .95));
+  animation: lsTwinkle 2.2s ease-in-out infinite;
+}
+
+@keyframes lsTwinkle { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+
+.ls-lights {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 44% 28%, #ff6b74 0 2px, transparent 3px),
+    radial-gradient(circle at 58% 42%, #ffcf6b 0 2px, transparent 3px),
+    radial-gradient(circle at 36% 56%, #bfe9ff 0 2px, transparent 3px),
+    radial-gradient(circle at 64% 64%, #ff6b74 0 2px, transparent 3px),
+    radial-gradient(circle at 46% 76%, #ffcf6b 0 2px, transparent 3px),
+    radial-gradient(circle at 30% 84%, #bfe9ff 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 86%, #ff6b74 0 2px, transparent 3px);
+  animation: lsFlicker 1.8s ease-in-out infinite;
+}
+
+@keyframes lsFlicker { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+/* ---- snowman ---- */
+
+.ls-snowman {
+  position: absolute;
+  right: 11%; bottom: 21%;
+  width: clamp(58px, 8vw, 84px);
+  height: clamp(88px, 12vw, 124px);
+  z-index: 4;
+  transform: translateY(calc((1 - var(--scene, 0)) * 22%));
+  filter: drop-shadow(0 10px 14px rgba(4, 12, 18, .45));
+}
+
+.sm-body {
+  position: absolute;
+  left: 50%; bottom: 0;
+  transform: translateX(-50%);
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 40%, #22303a 0 2px, transparent 3px),
+    radial-gradient(circle at 50% 62%, #22303a 0 2px, transparent 3px),
+    radial-gradient(circle at 34% 28%, #ffffff, #dbe9f4 62%, #b7cfe0);
+}
+
+.sm-head {
+  position: absolute;
+  left: 50%; top: 5%;
+  transform: translateX(-50%);
+  width: 52%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 42%, #22303a 0 2px, transparent 2.8px),
+    radial-gradient(circle at 62% 42%, #22303a 0 2px, transparent 2.8px),
+    radial-gradient(circle at 34% 28%, #ffffff, #e4eff7 65%, #c3d8e6);
+}
+
+.sm-nose {
+  position: absolute;
+  top: 21%; left: 63%;
+  width: 27%; height: 8%;
+  background: linear-gradient(90deg, #ff9a3c, #e2701f);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.sm-hat {
+  position: absolute;
+  left: 50%; top: -7%;
+  transform: translateX(-50%);
+  width: 42%; height: 19%;
+  background: linear-gradient(#2a3b49, #16222c);
+  border-radius: 3px 3px 0 0;
+}
+
+.sm-hat::after {
+  content: "";
+  position: absolute;
+  left: -22%; right: -22%; bottom: -3px;
+  height: 5px;
+  background: #16222c;
+  border-radius: 999px;
+}
+
+.sm-scarf {
+  position: absolute;
+  left: 50%; top: 33%;
+  transform: translateX(-50%);
+  width: 58%; height: 9%;
+  background: linear-gradient(90deg, #ef4b5b, #c22233);
+  border-radius: 5px;
+}
+
+.sm-scarf::after {
+  content: "";
+  position: absolute;
+  right: 8%; top: 80%;
+  width: 22%; height: 130%;
+  background: linear-gradient(#ef4b5b, #c22233);
+  border-radius: 3px;
+  rotate: 8deg;
+}
+
+.sm-arm {
+  position: absolute;
+  height: 4px;
+  background: linear-gradient(90deg, #7a4a2b, #5b3620);
+  border-radius: 2px;
+}
+
+.sm-arm--l {
+  top: 44%; left: -15%;
+  width: 30%;
+  transform: rotate(24deg);
+  transform-origin: right center;
+}
+
+.sm-arm--r {
+  top: 40%; right: -19%;
+  width: 35%;
+  transform-origin: left center;
+  animation: lsWave 1.5s ease-in-out infinite;
+}
+
+.sm-arm--r::before, .sm-arm--r::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  width: 11px; height: 3px;
+  background: #6b3f24;
+  border-radius: 2px;
+}
+
+.sm-arm--r::before { top: -4px; transform: rotate(36deg); }
+.sm-arm--r::after  { top: 4px;  transform: rotate(-28deg); }
+
+@keyframes lsWave {
+  0%, 100% { transform: rotate(-16deg); }
+  50%      { transform: rotate(-64deg); }
+}
+
+/* ---- small screens ---- */
+
+@media (max-width: 600px) {
+  .ls-tree { left: 6%; bottom: 20%; }
+  .ls-snowman { right: 7%; bottom: 18%; }
+  .landscape::before { right: 2%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ls-tree, .ls-star, .ls-lights, .sm-arm--r { animation: none; }
+}
