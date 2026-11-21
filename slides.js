@@ -1,7 +1,6 @@
 window.SLIDES_DATA = {
   "meta": {
     "title": "FROSTFALL — Holiday Field Manual",
-    "brand": "test"
   },
   "slides": [
     {

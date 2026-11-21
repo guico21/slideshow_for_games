@@ -7,7 +7,6 @@
   const dotsEl  = document.getElementById('dots');
   const counter = document.getElementById('slideCounter');
   const bar     = document.getElementById('progressBar');
-  const brandEl = document.getElementById('brandText');
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
 
@@ -181,9 +180,6 @@
 
     if (!Array.isArray(data) && data.meta) {
       if (data.meta.title) document.title = data.meta.title;
-      if (data.meta.brand || data.meta.title) {
-        brandEl.textContent = data.meta.brand || data.meta.title;
-      }
     }
 
     state.els = slides.map((slide, i) => buildSlide(slide, i));

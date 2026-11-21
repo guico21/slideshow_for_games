@@ -119,36 +119,13 @@ body {
   z-index: 5;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 24px clamp(16px, 4vw, 44px);
   font-size: 11px;
   letter-spacing: .24em;
   text-transform: uppercase;
   color: var(--muted);
   pointer-events: none;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-family: var(--font-head);
-  font-weight: 600;
-  letter-spacing: .18em;
-  color: #e9f3f8;
-}
-
-.brand-dot {
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  background: var(--accent-2);
-  box-shadow: 0 0 14px var(--accent-2);
-  animation: blink 2.4s ease-in-out infinite;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: .25; }
 }
 
 .hud-counter { font-variant-numeric: tabular-nums; }
@@ -814,18 +791,6 @@ body {
     letter-spacing: .16em;
   }
 
-  .brand {
-    min-width: 0;
-    gap: 8px;
-    letter-spacing: .14em;
-  }
-
-  .brand span:last-child {
-    max-width: 58vw;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 
   .controls {
     bottom: max(10px, calc(8px + var(--safe-bottom)));
