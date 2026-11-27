@@ -15,12 +15,15 @@ const CONFIG = {
   gameNight:       { y: 2026, m: 11, d: 27 },  // Dec 27, 2026
 
   // ✏️ Add a name here every time someone confirms
+  // players: [
+  //   "Guido", "Giada", "Marta", "Fabio", "Davide", "Elena",
+  //   "Andrea", "Chiara", "Matteo", "Francesca", "Simone",
+  //   "Alice", "Paolo", "Martina"
+  // ],
   players: [
-    "Luca", "Giulia", "Marco", "Sara", "Davide", "Elena",
-    "Andrea", "Chiara", "Matteo", "Francesca", "Simone",
-    "Alice", "Paolo", "Martina"
+    "Guido", "Giada", "Marta", "Fabio"
   ],
-  maxPlayers: 20,
+  maxPlayers: 30,
 };
 
 /* ─────────────────────────────────────────────────── */
@@ -65,7 +68,7 @@ setCard($("#daysGame"), $("#unitGame"), $("#stateGame"),
   const count = CONFIG.players.length;
   const max = CONFIG.maxPlayers;
 
-  $("#plMax").textContent = max;
+  // $("#plMax").textContent = max;
   countUp($("#plCount"), count, 1300);
 
   const chips = $("#chips");
@@ -163,7 +166,7 @@ setCard($("#daysGame"), $("#unitGame"), $("#stateGame"),
 
   function syncToggleLabel() {
     const anyClosed = items.some((i) => !i.classList.contains("open"));
-    toggleBtn.textContent = anyClosed ? "Espandi tutte" : "Chiudi tutte";
+    toggleBtn.textContent = anyClosed ? "Espandi" : "Chiudi";
   }
 })();
 
