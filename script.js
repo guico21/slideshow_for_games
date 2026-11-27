@@ -5,7 +5,7 @@
 
 const CONFIG = {
   // ← YOUR WhatsApp number: country code + number, NO "+", NO spaces
-  whatsappNumber: "4477000000000",
+  whatsappNumber: "447746699443",
 
   // Message pre-filled when the user taps "Conferm my"
   confirmMessage: "Eccomiii!🎄",
