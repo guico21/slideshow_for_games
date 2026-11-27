@@ -104,7 +104,7 @@ setCard($("#daysGame"), $("#unitGame"), $("#stateGame"),
 
   const seat = $("#plSeat");
   seat.textContent = count < max
-    ? `Il posto n° ${count + 1} in slitta è ancora libero… 👇`
+    ? `Il posto n° ${count + 1} in slitta è ancora libero… 🎅🏼`
     : "Slitta piena! 🎅✨";
 
   const pct = Math.min(count / max, 1);
