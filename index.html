@@ -1,97 +1,347 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#06121a" />
-  <meta name="color-scheme" content="dark" />
-  <meta http-equiv="Cache-Control" content="no-cache" />
-  <meta name="description" content="Xmas Games Night — 3rd Edition. Countdown, fees & prizes, house rules and FAQs. 27 Dec, 19:00." />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Xmas Games Night — 3rd Edition" />
-  <meta property="og:description" content="Confirm by 28 Nov · Game night 27 Dec, 19:00 · €22 self-funded, surplus returned." />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Xmas Games Night — 3rd Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xmas Night 2026 · 3ª edizione 🎲</title>
+  <meta name="description" content="Xmas Night 2026 — la serata giochi più natalizia dell'anno. 27 dicembre: dadi, carte, panettone e una slitta di posti da riempire." />
+  <meta name="theme-color" content="#071528" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎲</text></svg>" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet" />
 
-  <!--
-    CACHE-BUSTING LOADER
-    1. Create version.json in this folder: { "version": "1" }
-    2. On every deploy, bump that number. That's it.
-    Every refresh fetches version.json fresh (no-store + timestamp),
-    then loads all CSS/JS with ?v=<number>, so phones can never serve
-    stale assets. If version.json is missing/offline, it falls back to
-    a time-based version so the page still loads.
-  -->
-  <script>
-    (function () {
-      function boot(v) {
-        ['style.css', 'landscape.css'].forEach(function (f) {
-          var l = document.createElement('link');
-          l.rel = 'stylesheet';
-          l.href = f + '?v=' + encodeURIComponent(v);
-          document.head.appendChild(l);
-        });
-        var c = document.createElement('script');
-        c.src = 'content.js?v=' + encodeURIComponent(v);
-        c.onload = function () {
-          var a = document.createElement('script');
-          a.src = 'app.js?v=' + encodeURIComponent(v);
-          document.body.appendChild(a);
-        };
-        document.body.appendChild(c);
-      }
-
-      fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (j) { boot(j && j.version ? j.version : 't' + Date.now()); })
-        .catch(function () { boot('t' + Date.now()); });
-    })();
-  </script>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <canvas id="snow" class="snow" aria-hidden="true"></canvas>
-  <div class="bg-glow" aria-hidden="true"></div>
-  <div class="lights" aria-hidden="true"></div>
 
-  <!-- Optional snowy-hills / tree / waving-snowman scene (styled only by landscape.css) -->
-  <div class="landscape" aria-hidden="true">
-    <span class="ls-hill ls-hill--back"></span>
-    <span class="ls-hill ls-hill--mid"></span>
-    <span class="ls-hill ls-hill--front"></span>
-    <span class="ls-tree">
-      <i class="ls-trunk"></i>
-      <i class="ls-tier ls-tier--3"></i>
-      <i class="ls-tier ls-tier--2"></i>
-      <i class="ls-tier ls-tier--1"></i>
-      <i class="ls-lights"></i>
-      <i class="ls-star"></i>
-    </span>
-    <span class="ls-snowman">
-      <i class="sm-arm sm-arm--l"></i>
-      <i class="sm-arm sm-arm--r"></i>
-      <i class="sm-body"></i>
-      <i class="sm-scarf"></i>
-      <i class="sm-head"></i>
-      <i class="sm-nose"></i>
-      <i class="sm-hat"></i>
-    </span>
+  <!-- ambient layers -->
+  <div class="sky" aria-hidden="true"></div>
+  <div class="stars" id="stars" aria-hidden="true"></div>
+  <canvas id="snow" aria-hidden="true"></canvas>
+  <div class="lights" id="lights" aria-hidden="true"></div>
+
+  <!-- Santa walks as you scroll -->
+  <div class="santa" id="santa" aria-hidden="true">
+    <div class="santa-flip">
+      <svg class="santa-inner" viewBox="0 0 72 78" width="58" height="62">
+        <g class="leg leg-l"><rect x="27" y="56" width="7" height="11" rx="3" fill="#2c2c34"/><rect x="25" y="65" width="11" height="6" rx="2.5" fill="#17171d"/></g>
+        <g class="leg leg-r"><rect x="38" y="56" width="7" height="11" rx="3" fill="#2c2c34"/><rect x="36" y="65" width="11" height="6" rx="2.5" fill="#17171d"/></g>
+        <rect x="22" y="36" width="28" height="24" rx="9" fill="#e8464e"/>
+        <rect x="22" y="47" width="28" height="5" fill="#26221f"/>
+        <rect x="33" y="46.5" width="6" height="6" rx="1.5" fill="#ffc857"/>
+        <rect x="16" y="38" width="8" height="16" rx="4" fill="#e8464e"/>
+        <circle cx="20" cy="55" r="3.6" fill="#1b7a4d"/>
+        <rect x="48" y="38" width="8" height="16" rx="4" fill="#e8464e"/>
+        <rect x="48" y="48" width="12" height="10" rx="2" fill="#ffc857"/>
+        <rect x="52.8" y="48" width="2.4" height="10" fill="#d33049"/>
+        <rect x="48" y="52" width="12" height="2.2" fill="#d33049"/>
+        <circle cx="36" cy="33" r="12" fill="#ffffff"/>
+        <circle cx="36" cy="24" r="10.5" fill="#ffd9b8"/>
+        <circle cx="32.5" cy="22.5" r="1.4" fill="#26323f"/>
+        <circle cx="39.5" cy="22.5" r="1.4" fill="#26323f"/>
+        <circle cx="30" cy="26" r="2" fill="#ff9d9d" opacity=".65"/>
+        <circle cx="42" cy="26" r="2" fill="#ff9d9d" opacity=".65"/>
+        <ellipse cx="32.5" cy="29" rx="4.5" ry="2.4" fill="#fff"/>
+        <ellipse cx="39.5" cy="29" rx="4.5" ry="2.4" fill="#fff"/>
+        <circle cx="36" cy="26.4" r="2.3" fill="#f0a07c"/>
+        <path d="M26 15 C29 5, 41 2, 46 6 C49 9, 47 13, 44 15 Z" fill="#e8464e"/>
+        <circle cx="47" cy="6" r="3.6" fill="#fff"/>
+        <rect x="23" y="13" width="26" height="6" rx="3" fill="#fff"/>
+      </svg>
+    </div>
   </div>
 
-  <div class="progress" aria-hidden="true">
-    <div class="progress-bar" id="progressBar"></div>
+  <!-- ═══════════ MASTHEAD ═══════════ -->
+  <header class="masthead">
+    <div class="title-wrap reveal">
+      <div class="sticker" role="img" aria-label="Terza edizione">
+        <span class="st-top">★</span>
+        <span class="st-num">3ª</span>
+        <span class="st-sub">EDIZIONE</span>
+      </div>
+      <h1 class="title">
+        <span class="title-xmas">Xmas Night</span>
+        <span class="title-year">2026</span>
+      </h1>
+      <p class="tag">27 dicembre · la notte più ludica dell'anno</p>
+    </div>
+
+    <!-- festive scene: tree · snowman · dice · present -->
+    <svg class="scene" viewBox="0 0 320 92" aria-hidden="true">
+      <path d="M0 84 Q40 78 80 84 T160 84 T240 84 T320 84 V92 H0 Z" fill="#f4f9ff" opacity=".92"/>
+      <g class="tree-sway">
+        <rect x="55" y="76" width="10" height="9" rx="2" fill="#7a4a2b"/>
+        <path d="M60 46 L90 80 L30 80 Z" fill="#1b7a4d"/>
+        <path d="M60 28 L84 62 L36 62 Z" fill="#27955d"/>
+        <path d="M60 12 L78 42 L42 42 Z" fill="#2fae6b"/>
+        <circle cx="52" cy="52" r="2.4" fill="#ff5d5d"/>
+        <circle cx="68" cy="44" r="2.4" fill="#ffc857"/>
+        <circle cx="60" cy="66" r="2.4" fill="#9fd8ff"/>
+        <circle cx="74" cy="70" r="2.2" fill="#ff5d5d"/>
+        <circle cx="46" cy="72" r="2.2" fill="#ffc857"/>
+        <circle cx="60" cy="9" r="6" fill="#ffc857" opacity=".25"/>
+        <path class="star-pulse" d="M60 2 l2.35 4.76 5.25 .76 -3.8 3.7 .9 5.23 -4.7 -2.47 -4.7 2.47 .9 -5.23 -3.8 -3.7 5.25 -.76 z" fill="#ffc857"/>
+      </g>
+      <g>
+        <path d="M147 62 l-11 -7 M173 62 l11 -7" stroke="#7a4a2b" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="160" cy="70" r="13" fill="#fff"/>
+        <circle cx="160" cy="50" r="9.5" fill="#fff"/>
+        <rect x="152" y="56" width="16" height="4" rx="2" fill="#e8464e"/>
+        <rect x="163" y="59" width="4" height="8" rx="2" fill="#e8464e"/>
+        <circle cx="157" cy="48" r="1.1" fill="#1e2430"/>
+        <circle cx="163" cy="48" r="1.1" fill="#1e2430"/>
+        <path d="M160 51 l8 1.6 -8 1.8 z" fill="#ff9d3b"/>
+        <rect x="150" y="40" width="20" height="3.5" rx="1.5" fill="#1e2430"/>
+        <rect x="153.5" y="30.5" width="13" height="10" rx="2" fill="#1e2430"/>
+        <rect x="153.5" y="38" width="13" height="2.5" fill="#ffc857"/>
+        <circle cx="160" cy="67" r="1.3" fill="#1e2430"/>
+        <circle cx="160" cy="73" r="1.3" fill="#1e2430"/>
+      </g>
+      <g class="dice-float">
+        <g transform="rotate(-12 235 71)">
+          <rect x="222" y="58" width="26" height="26" rx="6" fill="#fff"/>
+          <circle cx="229" cy="65" r="2.2" fill="#d33049"/><circle cx="241" cy="65" r="2.2" fill="#d33049"/>
+          <circle cx="235" cy="71" r="2.2" fill="#d33049"/>
+          <circle cx="229" cy="77" r="2.2" fill="#d33049"/><circle cx="241" cy="77" r="2.2" fill="#d33049"/>
+        </g>
+        <g transform="rotate(12 265 57)">
+          <rect x="254" y="46" width="22" height="22" rx="5" fill="#ff5d5d" stroke="#fff" stroke-width="1.4"/>
+          <circle cx="260" cy="52" r="2.2" fill="#fff"/><circle cx="270" cy="62" r="2.2" fill="#fff"/>
+        </g>
+      </g>
+      <g>
+        <rect x="282" y="60" width="30" height="22" rx="3" fill="#e8464e"/>
+        <rect x="279" y="54" width="36" height="8" rx="2" fill="#c22f45"/>
+        <rect x="295" y="54" width="4" height="28" fill="#ffc857"/>
+        <circle cx="293" cy="52" r="3" fill="#ffc857"/><circle cx="301" cy="52" r="3" fill="#ffc857"/>
+      </g>
+    </svg>
+
+    <p class="summary reveal">
+      Il <strong>27 dicembre</strong> si replica: tavolate di giochi da tavolo, carte e dadi,
+      panettone d'ordinanza e una slitta piena di posti da occupare.
+      Conferma <strong>entro il 6 dicembre</strong>, porta il tuo gioco del cuore
+      e preparati a difendere la corona fino all'ultimo lancio. 🎲
+    </p>
+  </header>
+
+  <main>
+
+    <!-- ═══════════ COUNTDOWN ═══════════ -->
+    <section class="countdowns reveal" aria-labelledby="cdTitle">
+      <h2 class="sec-title" id="cdTitle">Countdown</h2>
+      <div class="cd-grid">
+        <article class="cd-card cd-card--red" style="--tilt:-1.8deg">
+          <div class="cd-inner">
+            <p class="cd-head"><span class="cd-ico" aria-hidden="true">🎫</span>Conferma</p>
+            <p class="cd-num" id="daysConfirm">--</p>
+            <p class="cd-unit" id="unitConfirm">giorni</p>
+            <p class="cd-date">entro il 6 dicembre</p>
+            <p class="cd-state" id="stateConfirm"></p>
+          </div>
+        </article>
+        <article class="cd-card cd-card--green" style="--tilt:1.8deg">
+          <div class="cd-inner">
+            <p class="cd-head"><span class="cd-ico" aria-hidden="true">🎲</span>Serata Giochi</p>
+            <p class="cd-num" id="daysGame">--</p>
+            <p class="cd-unit" id="unitGame">giorni</p>
+            <p class="cd-date">la grande notte · 27 dicembre</p>
+            <p class="cd-state" id="stateGame"></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ═══════════ CONFIRMED PLAYERS ═══════════ -->
+    <section class="panel players reveal" aria-labelledby="playersTitle">
+      <svg class="snowman-deco" viewBox="0 0 60 78" aria-hidden="true">
+        <path d="M15 44 l-10 -6 M45 44 l10 -6" stroke="#7a4a2b" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="30" cy="56" r="15" fill="#fff"/>
+        <circle cx="30" cy="33" r="11" fill="#fff"/>
+        <rect x="21" y="39" width="18" height="4.5" rx="2" fill="#e8464e"/>
+        <rect x="33" y="42" width="4.5" height="9" rx="2" fill="#e8464e"/>
+        <circle cx="26.5" cy="31" r="1.3" fill="#1e2430"/>
+        <circle cx="33.5" cy="31" r="1.3" fill="#1e2430"/>
+        <path d="M30 34 l9 1.8 -9 2 z" fill="#ff9d3b"/>
+        <rect x="19" y="21" width="22" height="4" rx="2" fill="#1e2430"/>
+        <rect x="23" y="10" width="14" height="12" rx="2" fill="#1e2430"/>
+        <rect x="23" y="19" width="14" height="2.6" fill="#ffc857"/>
+        <circle cx="30" cy="52" r="1.5" fill="#1e2430"/>
+        <circle cx="30" cy="59" r="1.5" fill="#1e2430"/>
+      </svg>
+
+      <h2 class="sec-title" id="playersTitle">Giocatori confermati</h2>
+      <p class="players-sub">la slitta si sta riempiendo…</p>
+
+      <div class="globe">
+        <svg viewBox="0 0 140 140" aria-hidden="true">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffc857"/>
+              <stop offset=".5" stop-color="#ff8f87"/>
+              <stop offset="1" stop-color="#4fd58f"/>
+            </linearGradient>
+          </defs>
+          <circle cx="70" cy="70" r="60" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="9"/>
+          <circle cx="70" cy="70" r="48" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1.5" stroke-dasharray="3 7"/>
+          <circle id="ringFg" cx="70" cy="70" r="60" fill="none" stroke="url(#ringGrad)" stroke-width="9"
+                  stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377"
+                  transform="rotate(-90 70 70)"/>
+        </svg>
+        <div class="globe-center">
+          <span class="globe-num" id="plCount">0</span>
+          <span class="globe-cap">su <b id="plMax">–</b> posti</span>
+        </div>
+      </div>
+
+      <ul class="chips" id="chips"></ul>
+      <p class="players-seat" id="plSeat"></p>
+    </section>
+
+    <!-- ═══════════ HOW IT WORKS ═══════════ -->
+    <section class="panel howto reveal" aria-labelledby="howTitle">
+      <h2 class="sec-title" id="howTitle">How the game night works</h2>
+      <ol class="steps">
+        <li class="step">
+          <span class="step-num" aria-hidden="true">1</span>
+          <div class="step-body">
+            <h3>Conferma la presenza</h3>
+            <p>Scrivici su WhatsApp <strong>entro il 6 dicembre</strong>: il pulsante qui sotto ti porta dritto in chat col messaggio già pronto. Senza conferma, niente slitta.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">2</span>
+          <div class="step-body">
+            <h3>Porta un gioco</h3>
+            <p>Scegli uno o due titoli dalla tua collezione: party game, carte o cinghioni, tutto fa brodo natalizio. Preparati a spiegarlo in 5 minuti.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">3</span>
+          <div class="step-body">
+            <h3>Si gioca a rotazione</h3>
+            <p>Tavoli aperti e turni da ~45 minuti: quando suona la campanella di Babbo Natale si cambia tavolo e si scopre un gioco nuovo.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">4</span>
+          <div class="step-body">
+            <h3>Mangia, bevi, respira</h3>
+            <p>Panettone, torrone e cioccolata calda sempre a bordo tavolo. Se hai intolleranze o allergie, segnalalo nel messaggio di conferma.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">5</span>
+          <div class="step-body">
+            <h3>Torneo &amp; corona</h3>
+            <p>Ogni partita assegna punti: chi ne raccoglie di più entro mezzanotte viene incoronato <strong>Campione Natalizio 2026</strong>.</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">6</span>
+          <div class="step-body">
+            <h3>Dress code elfico</h3>
+            <p>Dettaglio natalizio obbligatorio: cappellino, maglione orrendo o orecchie da renna. Il campione indossa la corona per tutta la notte.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ═══════════ FAQ ═══════════ -->
+    <section class="panel faq reveal" aria-labelledby="faqTitle">
+      <div class="faq-head">
+        <h2 class="sec-title" id="faqTitle">FAQ</h2>
+        <button class="faq-toggle-all" id="faqToggle" type="button">Espandi tutte</button>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="fa1" id="fq1">
+          <span>Devo proprio confermare entro il 6 dicembre?</span><span class="faq-ico" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a" id="fa1" role="region" aria-labelledby="fq1"><div class="faq-a-in">
+          <p>Sì: ci serve per organizzare posti, tavoli e soprattutto il cibo. Il pulsante qui sotto apre WhatsApp con il messaggio già pronto, bastano due tocchi.</p>
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="fa2" id="fq2">
+          <span>Posso portare più di un gioco?</span><span class="faq-ico" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a" id="fa2" role="region" aria-labelledby="fq2"><div class="faq-a-in">
+          <p>Certo, fino a due titoli così ruotano bene. L'ideale sono partite da 15–60 minuti, con una spiegazione delle regole il più rapida possibile.</p>
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="fa3" id="fq3">
+          <span>C'è da mangiare?</span><span class="faq-ico" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a" id="fa3" role="region" aria-labelledby="fq3"><div class="faq-a-in">
+          <p>Panettone, torrone, biscotti e cioccolata calda li mettiamo noi. Se vuoi, porta pure qualcosa da condividere: non è mai troppo Natale.</p>
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="fa4" id="fq4">
+          <span>Posso arrivare tardi o andare via prima?</span><span class="faq-ico" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a" id="fa4" role="region" aria-labelledby="fq4"><div class="faq-a-in">
+          <p>Sì, la formula a rotazione lo rende facilissimo: faccelo sapere quando confermi così ti teniamo comunque il posto in slitta.</p>
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="fa5" id="fq5">
+          <span>Posso venire con un amico o un'amica?</span><span class="faq-ico" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a" id="fa5" role="region" aria-labelledby="fq5"><div class="faq-a-in">
+          <p>Gli ospiti sono benvenuti, ma i posti sono limitati: scrivici prima su WhatsApp e li aggiungiamo alla lista dei giocatori.</p>
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="fa6" id="fq6">
+          <span>Dove si gioca?</span><span class="faq-ico" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a" id="fa6" role="region" aria-labelledby="fq6"><div class="faq-a-in">
+          <p>L'indirizzo esatto arriva in chat qualche giorno prima della serata, insieme agli ultimi dettagli. Prima conferma, prima lo ricevi. 😉</p>
+        </div></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" type="button" aria-expanded="false" aria-controls="fa7" id="fq7">
+          <span>Serve saper giocare a tutto?</span><span class="faq-ico" aria-hidden="true"></span>
+        </button>
+        <div class="faq-a" id="fa7" role="region" aria-labelledby="fq7"><div class="faq-a-in">
+          <p>No: ci sono giochi per ogni livello e c'è sempre qualcuno che spiega le regole. Conta molto più il panettone del punteggio. 🎲</p>
+        </div></div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Xmas Night 2026 · 3ª edizione · 27 dicembre</p>
+      <p>Fatto con ❄️, 🎲 e una buona dose di panettone</p>
+    </footer>
+  </main>
+
+  <!-- ═══════════ STICKY CTA ═══════════ -->
+  <div class="cta-bar" id="ctaBar">
+    <div class="cta-fade" aria-hidden="true"></div>
+    <div class="cta-tray">
+      <a class="cta" id="cta" href="#" target="_blank" rel="noopener">
+        <svg class="wa-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Conferm my
+        <span aria-hidden="true">🎲</span>
+      </a>
+    </div>
   </div>
 
-  <main id="page" class="page"></main>
-  <div class="cta-bar" id="ctaBar"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
 
-  <noscript>
-    <div class="noscript">🎄 Xmas Games Night needs JavaScript enabled to show the live countdown, funds and FAQs.</div>
-  </noscript>
+  <noscript><p style="text-align:center;padding:12px;color:#ffd98f">Attiva JavaScript per vedere countdown e giocatori confermati 😉</p></noscript>
+
+  <script src="script.js"></script>
 </body>
 </html>
