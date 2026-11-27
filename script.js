@@ -320,6 +320,47 @@ setCard($("#daysGame"), $("#unitGame"), $("#stateGame"),
   rafId = requestAnimationFrame(frame);
 })();
 
+/* ---------- sticky countdown bar ---------- */
+(function stickyCountdown() {
+  const sticky = $("#stickyCd");
+  const section = document.querySelector(".countdowns");
+  const stickyConfirm = $("#stickyConfirm");
+  const stickyGame = $("#stickyGame");
+  const mainConfirm = $("#daysConfirm");
+  const mainGame = $("#daysGame");
+
+  if (!sticky || !section) return;
+
+  // Sync values from the main cards into the sticky bar
+  function sync() {
+    if (stickyConfirm && mainConfirm) stickyConfirm.textContent = mainConfirm.textContent;
+    if (stickyGame && mainGame) stickyGame.textContent = mainGame.textContent;
+  }
+
+  // Initial sync (values are set by the countdown logic above)
+  // Delay slightly so the countUp animation has populated the main cards
+  setTimeout(sync, 100);
+
+  if (!("IntersectionObserver" in window)) {
+    sticky.classList.add("is-stuck");
+    return;
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      // Only stick when the section has scrolled OUT the top of the viewport
+      if (!e.isIntersecting && e.boundingClientRect.top < 0) {
+        sticky.classList.add("is-stuck");
+        sync();
+      } else if (e.isIntersecting) {
+        sticky.classList.remove("is-stuck");
+      }
+    });
+  }, { threshold: 0 });
+
+  io.observe(section);
+})();
+
 /* ---------- toast helper (shared) ---------- */
 function showToast(msg) {
   const t = $("#toast");

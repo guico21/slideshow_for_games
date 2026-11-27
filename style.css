@@ -1068,3 +1068,103 @@ main {
     transform: none;
   }
 }
+
+/* ═══════════ STICKY COUNTDOWN BAR ═══════════ */
+.sticky-cd {
+  position: fixed;
+  top: 36px;
+  left: 0;
+  right: 0;
+  z-index: 45;
+  pointer-events: none;
+  transform: translateY(-110%);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.3, 1),
+              opacity 0.35s ease;
+}
+
+.sticky-cd.is-stuck {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sticky-cd-inner {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 14px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.sticky-card {
+  flex: 1;
+  max-width: 170px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 14px;
+  color: var(--cream);
+  font-weight: 500;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: 0 6px 18px rgba(3, 10, 25, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.sticky-card--red {
+  background: linear-gradient(135deg,
+    rgba(232, 70, 78, 0.92),
+    rgba(194, 47, 69, 0.92));
+}
+
+.sticky-card--green {
+  background: linear-gradient(135deg,
+    rgba(47, 174, 107, 0.92),
+    rgba(23, 122, 82, 0.92));
+}
+
+.sticky-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  opacity: 0.95;
+  white-space: nowrap;
+}
+
+.sticky-num {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.sticky-unit {
+  font-size: 0.62rem;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  align-self: flex-end;
+  margin-bottom: 1px;
+}
+
+/* Wider screens: slightly larger cards */
+@media (min-width: 640px) {
+  .sticky-card {
+    max-width: 200px;
+    padding: 8px 16px;
+  }
+  .sticky-label { font-size: 0.78rem; }
+  .sticky-num { font-size: 1.4rem; }
+}
+
+/* Very small phones: tighter spacing */
+@media (max-width: 380px) {
+  .sticky-cd-inner { gap: 6px; padding: 6px 8px; }
+  .sticky-card { padding: 6px 9px; gap: 4px; }
+  .sticky-label { font-size: 0.65rem; }
+  .sticky-num { font-size: 1.1rem; }
+}
