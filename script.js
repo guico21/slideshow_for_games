@@ -1,32 +1,31 @@
-/* ════════════════════════════════════════════════════
-   XMAS NIGHT 2026 · app.js
+/* ════════════════════════════════════════════════════════════════════
+   SERATA GIOCHI 2026 · script.js
    ✏️ EDIT THE CONFIG BELOW — everything else is automatic
-   ════════════════════════════════════════════════════ */
+   ════════════════════════════════════════════════════════════════════ */
 
 const CONFIG = {
   // ← YOUR WhatsApp number: country code + number, NO "+", NO spaces
-  whatsappNumber: "391234567890",
+  whatsappNumber: "4477000000000",
 
   // Message pre-filled when the user taps "Conferm my"
-  confirmMessage: "Ciao! 🎄 Confermo la mia presenza alla Xmas Night 2026 🎲 Mettetemi in lista!",
+  confirmMessage: "Eccomiii!🎄",
 
   // Dates — NOTE: month is 0-based (11 = December)
   confirmDeadline: { y: 2026, m: 11, d: 6 },   // Dec 6, 2026
   gameNight:       { y: 2026, m: 11, d: 27 },  // Dec 27, 2026
 
+  // ✏️ LOCATION: Update this when you have the address
+  // The card will automatically link to Google Maps when address is provided
+  locationAddress: "", // e.g., "Via Roma 123, Milano"
+
   // ✏️ Add a name here every time someone confirms
-  // players: [
-  //   "Guido", "Giada", "Marta", "Fabio", "Davide", "Elena",
-  //   "Andrea", "Chiara", "Matteo", "Francesca", "Simone",
-  //   "Alice", "Paolo", "Martina"
-  // ],
   players: [
     "Guido", "Giada", "Marta", "Fabio"
   ],
   maxPlayers: 30,
 };
 
-/* ─────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────── */
 
 document.documentElement.classList.add("js");
 const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -63,12 +62,34 @@ setCard($("#daysConfirm"), $("#unitConfirm"), $("#stateConfirm"),
 setCard($("#daysGame"), $("#unitGame"), $("#stateGame"),
         daysLeft(CONFIG.gameNight), "🎉 È stasera!");
 
+/* ---------- location card ---------- */
+(function locationCard() {
+  const card = $("#locationCard");
+  const addressEl = $("#locationAddress");
+  const ctaTextEl = $("#locationCtaText");
+  const address = CONFIG.locationAddress.trim();
+
+  if (address) {
+    addressEl.textContent = address;
+    ctaTextEl.textContent = "Apri in Google Maps";
+    card.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    card.classList.add("has-address");
+  } else {
+    addressEl.textContent = "";
+    ctaTextEl.textContent = "Indirizzo comunicato successivamente";
+    card.href = "#";
+    card.addEventListener("click", (e) => {
+      e.preventDefault();
+      showToast("L'indirizzo verrà annunciato presto! 🎄");
+    });
+  }
+})();
+
 /* ---------- confirmed players widget ---------- */
 (function playersWidget() {
   const count = CONFIG.players.length;
   const max = CONFIG.maxPlayers;
 
-  // $("#plMax").textContent = max;
   countUp($("#plCount"), count, 1300);
 
   const chips = $("#chips");
@@ -86,7 +107,6 @@ setCard($("#daysGame"), $("#unitGame"), $("#stateGame"),
     ? `Il posto n° ${count + 1} in slitta è ancora libero… 👇`
     : "Slitta piena! 🎅✨";
 
-  // progress ring (r=60 → circumference ≈ 377)
   const pct = Math.min(count / max, 1);
   requestAnimationFrame(() => {
     setTimeout(() => {
@@ -102,7 +122,7 @@ setCard($("#daysGame"), $("#unitGame"), $("#stateGame"),
   link.href = url;
 
   if (/X{4,}/.test(CONFIG.whatsappNumber) || CONFIG.whatsappNumber === "391234567890") {
-    console.warn("🎅 Ricordati di impostare il numero WhatsApp reale in CONFIG (app.js)!");
+    console.warn("🎅 Ricordati di impostare il numero WhatsApp reale in CONFIG (script.js)!");
   }
 
   link.addEventListener("click", () => {
@@ -232,7 +252,7 @@ setCard($("#daysGame"), $("#unitGame"), $("#stateGame"),
 
   function onScroll() {
     const y = window.scrollY;
-    if (y < lastY - 2) santa.classList.add("flip");       // scrolling up → walk left
+    if (y < lastY - 2) santa.classList.add("flip");
     else if (y > lastY + 2) santa.classList.remove("flip");
     lastY = y;
     if (!ticking) {
@@ -299,3 +319,11 @@ setCard($("#daysGame"), $("#unitGame"), $("#stateGame"),
   resize();
   rafId = requestAnimationFrame(frame);
 })();
+
+/* ---------- toast helper (shared) ---------- */
+function showToast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2800);
+}
