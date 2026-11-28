@@ -20,7 +20,7 @@ const CONFIG = {
 
   // ✏️ Add a name here every time someone confirms
   players: [
-    "Guido", "Giada", "Marta", "Fabio", "Federica", "Sofia", "Gaia"
+    "Guido", "Giada", "Marta", "Fabio", "Federica", "Sofia", "Gaia", "Chiara", "Bruno", "Nicholas"
   ],
   maxPlayers: 30,
 };
